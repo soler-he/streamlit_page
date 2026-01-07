@@ -16,7 +16,7 @@ date_columns = [col for col in t_df.columns if 'yyyy-mm-dd' in col]
 time_columns = [col for col in t_df.columns if 'HH:MM:SS' in col]
 intensity_columns = ['p25MeV peak flux', 'e1MeV peak flux', 'e100keV peak flux', 'e1MeV peak flux proxy', 'e100keV peak flux proxy']
 
-df_sep_org = pd.read_csv(f'catalogues/{fname}.csv', sep=',', parse_dates=datetime_columns)
+df_sep_org = pd.read_csv(f'catalogues/{fname}.csv', sep=',')  # , parse_dates=datetime_columns)
 
 # Convert floats to strings formatted in scientific notation
 for key in intensity_columns:
@@ -118,7 +118,8 @@ cell_style_NaT = JsCode("""
         }
 };
 """)
-gb.configure_columns(column_names=date_columns, cellDataType='date', type=["dateColumnFilter", "customDateTimeFormat"], custom_format_string='yyyy-MM-dd', cellStyle=cell_style_NaT)
+# gb.configure_columns(column_names=date_columns, cellDataType='date', type=["dateColumnFilter", "customDateTimeFormat"], custom_format_string='yyyy-MM-dd', cellStyle=cell_style_NaT)
+gb.configure_columns(column_names=date_columns, type=["dateColumnFilter", "customDateTimeFormat"], custom_format_string='yyyy-MM-dd', cellStyle=cell_style_NaT)
 
 for key in ["SEP_IDX", "FLARE_IDX", "CME_IDX", "Event No", "event number"]:
   if key in df_sep.columns:
