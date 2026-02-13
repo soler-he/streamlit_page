@@ -154,3 +154,7 @@ if (type(grid3['selected_rows']).__name__ == "NoneType"):
   st.write('Select rows to see details!')
 else:
   st.write(grid3['selected_rows'])
+
+# st.write('To download a table as csv file, move the mouse over it and click on the ⬇️ icon in the top right of the table.')
+# st.components.v1.html('<script src="https://kit.fontawesome.com/2c74303849.js" crossorigin="anonymous"></script><p>To download a table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.</p>')
+st.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">To download a table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.', unsafe_allow_html=True)

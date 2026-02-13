@@ -109,3 +109,5 @@ if (type(grid1['selected_rows']).__name__ == "NoneType"):
 else:
   st.write(grid1['selected_rows'])
   # st.image(grid1['selected_rows']['IP Radio Bursts'].values[0])
+
+st.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">To download a table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.', unsafe_allow_html=True)
