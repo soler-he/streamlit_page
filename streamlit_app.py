@@ -19,8 +19,8 @@ st.set_page_config(
 
 # st.sidebar.checkbox("Expand columns to show content", value=True, key='fitCellContents')
 
-available_themes = ["streamlit", "light", "dark", "blue", "fresh", "material", "quartz",  "alpine"]
-selected_theme = st.sidebar.selectbox("Theme", available_themes, key='selected_theme')
+# available_themes = ["streamlit", "light", "dark", "blue", "fresh", "material", "quartz",  "alpine"]
+# selected_theme = st.sidebar.selectbox("Theme", available_themes, key='selected_theme')
 
 # st.sidebar.write(st.session_state)
 
