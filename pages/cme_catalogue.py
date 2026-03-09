@@ -94,6 +94,8 @@ gridOptions['autoSizeStrategy'] = 'fitCellContents'
 #     .withParts("iconSetAlpine", "colorSchemeDark")
 # )
 
+if 'selected_theme' not in st.session_state:
+  st.session_state.selected_theme = "streamlit"
 
 grid1 = AgGrid(df_cme, show_toolbar=True, height=500, gridOptions=gridOptions, 
                 updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,

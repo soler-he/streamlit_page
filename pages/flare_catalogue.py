@@ -155,6 +155,8 @@ sleep(0.01)
 # except AttributeError:
 #   pass
 
+if 'selected_theme' not in st.session_state:
+  st.session_state.selected_theme = "streamlit"
 
 with details_container:
     with st.container(border=True):
