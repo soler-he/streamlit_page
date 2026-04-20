@@ -38,41 +38,41 @@ def store_value(my_key):
 default_columns = df_cme_org.keys().tolist()
 hid_cols = ["Start time (Sun)", "Start time (1 AU)"]
 for col in hid_cols:
-  default_columns.remove(col)
+    default_columns.remove(col)
 
 if 'selected_columns_cme' in st.session_state:
-  default_keys = st.session_state.selected_columns_cme
+    default_keys = st.session_state.selected_columns_cme
 else:
-  default_keys = default_columns  # TODO: provides this as an option? show all columns?
+    default_keys = default_columns  # TODO: provides this as an option? show all columns?
 
 st.multiselect("Select columns to display (by default all are active).", options=df_cme_org.keys(), default=default_keys, key='_selected_columns_cme', on_change=store_value, args=["selected_columns_cme"])
 # st.multiselect("Select columns to display  (by default all are active).", options=df_cme.keys(), default=df_cme.keys(), key='selected_columns_cme')
 hidden_columns = df_cme_org.keys().tolist()
 if 'selected_columns_cme' in st.session_state:
-  df_cme = df_cme_org[st.session_state.selected_columns_cme]
-  # hidden_columns = hidden_columns.remove('CME IDX')
-  # st.write([col for col in st.session_state.selected_columns_cme])
-  for col in st.session_state.selected_columns_cme:
-    hidden_columns.remove(col)
-  # [hidden_columns.remove(col) for col in st.session_state.selected_columns_cme]
+    df_cme = df_cme_org[st.session_state.selected_columns_cme]
+    # hidden_columns = hidden_columns.remove('CME IDX')
+    # st.write([col for col in st.session_state.selected_columns_cme])
+    for col in st.session_state.selected_columns_cme:
+        hidden_columns.remove(col)
+    # [hidden_columns.remove(col) for col in st.session_state.selected_columns_cme]
 else:
-  df_cme = df_cme_org[default_keys]
-  for col in default_keys:
-    hidden_columns.remove(col)
+    df_cme = df_cme_org[default_keys]
+    for col in default_keys:
+        hidden_columns.remove(col)
 if len(hidden_columns) == 0:
-  st.write("All columns are displayed.")
+    st.write("All columns are displayed.")
 elif len(hidden_columns) > 0:
-  with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
-    st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
-    st.write("To show hidden columns, select them from the multiselect box above.")
+    with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
+        st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
+        st.write("To show hidden columns, select them from the multiselect box above.")
 
 # for key, value in column.items():
-#     if not value:
-        # df_cme.drop(df_cme.filter(like=f'{key}_',axis=1).columns.to_list(), axis=1, inplace=True)
+    # if not value:
+    #     df_cme.drop(df_cme.filter(like=f'{key}_',axis=1).columns.to_list(), axis=1, inplace=True)
 
 gb = GridOptionsBuilder.from_dataframe(df_cme)
 for key in df_cme.keys():
-  gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
+    gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
 # gb.configure_column("flare_comments", header_name='Flare Comments', tooltipField='flare_comments', headerTooltip='Comments about flares', width=10)
 
 
@@ -101,7 +101,7 @@ gridOptions['autoSizeStrategy'] = 'fitCellContents'
 # )
 
 if 'selected_theme' not in st.session_state:
-  st.session_state.selected_theme = "streamlit"
+    st.session_state.selected_theme = "streamlit"
 
 grid1 = AgGrid(df_cme, show_toolbar=True, height=500, gridOptions=gridOptions,
                updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,
@@ -113,15 +113,15 @@ grid1 = AgGrid(df_cme, show_toolbar=True, height=500, gridOptions=gridOptions,
 
 
 if (type(grid1['selected_rows']).__name__ == "NoneType"):
-  st.write('Select rows to see details!')
+    st.write('Select rows to see details!')
 else:
-  st.write(grid1['selected_rows'])
-  # st.image(grid1['selected_rows']['IP Radio Bursts'].values[0])
+    st.write(grid1['selected_rows'])
+    # st.image(grid1['selected_rows']['IP Radio Bursts'].values[0])
 
 st.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">To download the shown table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.', unsafe_allow_html=True)
 
 file_path = os.path.join("catalogues", f"{fname}.csv")
 st.markdown(
-    get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
-    unsafe_allow_html=True
+        get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
+        unsafe_allow_html=True
 )

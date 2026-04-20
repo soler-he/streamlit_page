@@ -31,55 +31,55 @@ default_columns = df_flare_org.keys().tolist()
 hid_cols = ["Start Time at 1 AU (GOES)", "Start Time at 1 AU (STIX)", "Peak Time at 1 AU (GOES)", "Peak Time at 1 AU (STIX)", "End Time at 1 AU (GOES)", "End Time at 1 AU (STIX)",
             "Start Time at the Sun (GOES)", "Start Time at the Sun (STIX)", "Peak Time at the Sun (GOES)", "Peak Time at the Sun (STIX)", "End Time at the Sun (GOES)", "End Time at the Sun (STIX)"]
 for col in hid_cols:
-  default_columns.remove(col)
+    default_columns.remove(col)
 
 if 'selected_columns_flare' in st.session_state:
-  default_keys = st.session_state.selected_columns_flare
+    default_keys = st.session_state.selected_columns_flare
 else:
-  default_keys = default_columns  # TODO: provides this as an option? show all columns?
+    default_keys = default_columns  # TODO: provides this as an option? show all columns?
 
 st.multiselect("Select columns to display (by default all are active).", options=df_flare_org.keys(), default=default_keys, key='_selected_columns_flare', on_change=store_value, args=["selected_columns_flare"])
 # st.multiselect("Select columns to display (by default all are active).", options=df_flare_org.keys(), default=default_keys, key='_selected_columns_flare')
 hidden_columns = df_flare_org.keys().tolist()
 if 'selected_columns_flare' in st.session_state:
-  df_flare = df_flare_org[st.session_state.selected_columns_flare]
-  for col in st.session_state.selected_columns_flare:
-    hidden_columns.remove(col)
+    df_flare = df_flare_org[st.session_state.selected_columns_flare]
+    for col in st.session_state.selected_columns_flare:
+        hidden_columns.remove(col)
 else:
-  df_flare = df_flare_org[default_keys]
-  for col in default_keys:
-    hidden_columns.remove(col)
+    df_flare = df_flare_org[default_keys]
+    for col in default_keys:
+        hidden_columns.remove(col)
 if len(hidden_columns) == 0:
-  st.write("All columns are displayed.")
+    st.write("All columns are displayed.")
 elif len(hidden_columns) > 0:
-  with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
-    st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
-    st.write("To show hidden columns, select them from the multiselect box above.")
+    with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
+        st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
+        st.write("To show hidden columns, select them from the multiselect box above.")
 
 gb = GridOptionsBuilder.from_dataframe(df_flare)
 # gb.configure_column("# id", header_name='Event ID')
 for key in df_flare.keys():
-  gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
+    gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
 # gb.configure_column("flare_comments", header_name='Flare Comments', tooltipField='flare_comments', headerTooltip='Comments about flares', width=10)
 
 gb.configure_column(
-    "IP Radio Bursts",
-    headerName="IP Radio Bursts",
-    # width=100,
-    cellRenderer=JsCode("""
-        class UrlCellRenderer {
-          init(params) {
-            this.eGui = document.createElement('a');
-            this.eGui.innerText = params.value;
-            this.eGui.setAttribute('href', params.value);
-            this.eGui.setAttribute('style', "text-decoration:none");
-            this.eGui.setAttribute('target', "_blank");
-          }
-          getGui() {
-            return this.eGui;
-          }
-        }
-    """)
+        "IP Radio Bursts",
+        headerName="IP Radio Bursts",
+        # width=100,
+        cellRenderer=JsCode("""
+                class UrlCellRenderer {
+                    init(params) {
+                        this.eGui = document.createElement('a');
+                        this.eGui.innerText = params.value;
+                        this.eGui.setAttribute('href', params.value);
+                        this.eGui.setAttribute('style', "text-decoration:none");
+                        this.eGui.setAttribute('target', "_blank");
+                    }
+                    getGui() {
+                        return this.eGui;
+                    }
+                }
+        """)
 )
 
 # gb.configure_grid_options(onCellDoubleClicked=onCellDoubleClickedHandler)
@@ -87,14 +87,14 @@ gb.configure_column(
 
 # Make NaT values invisible without removing them
 cell_stylejscode = JsCode("""
-    function(params) {
-        console.log(params.value);
-        if (params.value === 'NaT') {
-            return {
-                'color':'rgb(0, 0, 0, 0.0)',
-                /// 'backgroundColor':'white'
-            }
-        }
+        function(params) {
+                console.log(params.value);
+                if (params.value === 'NaT') {
+                        return {
+                                'color':'rgb(0, 0, 0, 0.0)',
+                                /// 'backgroundColor':'white'
+                        }
+                }
 };
 """)
 gb.configure_columns(column_names=time_columns, cellStyle=cell_stylejscode)
@@ -131,7 +131,7 @@ gridOptions['autoSizeStrategy'] = 'fitCellContents'  # 'fitGridWidth'  # 'fitCel
 # )
 
 if 'selected_theme' not in st.session_state:
-  st.session_state.selected_theme = "streamlit"
+    st.session_state.selected_theme = "streamlit"
 
 grid2 = AgGrid(df_flare, show_toolbar=True, height=500, gridOptions=gridOptions,
                updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,
@@ -160,22 +160,22 @@ sleep(0.01)
 
 with details_container:
     with st.container(border=True):
-      if (type(grid2['selected_rows']).__name__ == "NoneType"):
-        st.write('Select rows to see details and obtain radio spectrograms!')
-      else:
-        st.write(grid2['selected_rows'])
-        for crocs_link in grid2['selected_rows']['IP Radio Bursts'].values:
-          with st.spinner("Downloading figure...", show_time=True):
-            fig = pooch.retrieve(url=crocs_link, known_hash=None, progressbar=False)
-            st.image(fig)
-            # st.image(crocs_link)
-        # st.image(grid2['selected_rows']['IP Radio Bursts'].values[0])
-        st.write('Plots obtained from https://parker.gsfc.nasa.gov/crocs.html')
+        if (type(grid2['selected_rows']).__name__ == "NoneType"):
+            st.write('Select rows to see details and obtain radio spectrograms!')
+        else:
+            st.write(grid2['selected_rows'])
+            for crocs_link in grid2['selected_rows']['IP Radio Bursts'].values:
+                with st.spinner("Downloading figure...", show_time=True):
+                    fig = pooch.retrieve(url=crocs_link, known_hash=None, progressbar=False)
+                    st.image(fig)
+                    # st.image(crocs_link)
+            # st.image(grid2['selected_rows']['IP Radio Bursts'].values[0])
+            st.write('Plots obtained from https://parker.gsfc.nasa.gov/crocs.html')
 
 st.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">To download the shown table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.', unsafe_allow_html=True)
 
 file_path = os.path.join("catalogues", f"{fname}.csv")
 st.markdown(
-    get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
-    unsafe_allow_html=True
+        get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
+        unsafe_allow_html=True
 )
