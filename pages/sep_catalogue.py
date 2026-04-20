@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import streamlit as st
-from st_aggrid import AgGrid, ColumnsAutoSizeMode, GridOptionsBuilder, GridUpdateMode #, StAggridTheme
+from st_aggrid import AgGrid, ColumnsAutoSizeMode, GridOptionsBuilder, GridUpdateMode  # StAggridTheme
 from st_aggrid.shared import JsCode
 from time import sleep
 
@@ -25,7 +25,8 @@ df_sep_org = pd.read_csv(f'catalogues/{fname}.csv', sep=',')  # , parse_dates=da
 
 # Convert floats to strings formatted in scientific notation
 for key in intensity_columns:
-  df_sep_org[key] = df_sep_org[key].apply(lambda x: f"{x:.2e}")
+    df_sep_org[key] = df_sep_org[key].apply(lambda x: f"{x:.2e}")
+
 
 def store_value(my_key):
     # Copy the value to the permanent key
@@ -34,35 +35,33 @@ def store_value(my_key):
 
 st.write("Select spacecraft to include data from:")
 with st.container(horizontal=True):
-  spacecraft = {}
-  spacecraft['bepi'] = 'BepiColombo'
-  spacecraft['l1'] = 'L1 (SOHO/Wind)'
-  spacecraft['psp'] = 'PSP'
-  spacecraft['solo'] = 'SOLO'
-  spacecraft['sta'] = 'STEREO-A'
+    spacecraft = {}
+    spacecraft['bepi'] = 'BepiColombo'
+    spacecraft['l1'] = 'L1 (SOHO/Wind)'
+    spacecraft['psp'] = 'PSP'
+    spacecraft['solo'] = 'SOLO'
+    spacecraft['sta'] = 'STEREO-A'
 
-  default_sc = {}
-  for sc in spacecraft.keys():
-    if f'sc_{sc}' in st.session_state:
-      default_sc[sc] = st.session_state[f'sc_{sc}']
-    else:
-      default_sc[sc] = True
+    default_sc = {}
+    for sc in spacecraft.keys():
+        if f'sc_{sc}' in st.session_state:
+            default_sc[sc] = st.session_state[f'sc_{sc}']
+        else:
+            default_sc[sc] = True
 
-  st.checkbox("BepiColombo", value=default_sc['bepi'], key='_sc_bepi', on_change=store_value, args=["sc_bepi"])
-  st.checkbox("L1 (SOHO/Wind)", value=default_sc['l1'], key='_sc_l1', on_change=store_value, args=["sc_l1"])
-  st.checkbox("Parker Solar Probe", value=default_sc['psp'], key='_sc_psp', on_change=store_value, args=["sc_psp"])
-  st.checkbox("Solar Orbiter", value=default_sc['solo'], key='_sc_solo', on_change=store_value, args=["sc_solo"])
-  st.checkbox("STEREO-A", value=default_sc['sta'], key='_sc_sta', on_change=store_value, args=["sc_sta"])
+    st.checkbox("BepiColombo", value=default_sc['bepi'], key='_sc_bepi', on_change=store_value, args=["sc_bepi"])
+    st.checkbox("L1 (SOHO/Wind)", value=default_sc['l1'], key='_sc_l1', on_change=store_value, args=["sc_l1"])
+    st.checkbox("Parker Solar Probe", value=default_sc['psp'], key='_sc_psp', on_change=store_value, args=["sc_psp"])
+    st.checkbox("Solar Orbiter", value=default_sc['solo'], key='_sc_solo', on_change=store_value, args=["sc_solo"])
+    st.checkbox("STEREO-A", value=default_sc['sta'], key='_sc_sta', on_change=store_value, args=["sc_sta"])
 
 sc_list = []
 for sc in spacecraft.keys():
-  if default_sc[sc]:
-    sc_list.append(spacecraft[sc])
+    if default_sc[sc]:
+        sc_list.append(spacecraft[sc])
 
 if 'Observer' in df_sep_org.columns:
-  df_sep_org = df_sep_org.loc[df_sep_org['Observer'].isin(sc_list)]
-
-
+    df_sep_org = df_sep_org.loc[df_sep_org['Observer'].isin(sc_list)]
 
 default_columns = pd.read_csv('catalogues/SOLER_SEP_catalogue_columns.csv', header=None).values.flatten().tolist()
 
@@ -70,67 +69,67 @@ default_columns = pd.read_csv('catalogues/SOLER_SEP_catalogue_columns.csv', head
 
 # select columns to display
 if 'selected_columns_sep' in st.session_state:
-  default_keys = st.session_state.selected_columns_sep
+    default_keys = st.session_state.selected_columns_sep
 else:
-  default_keys = default_columns  # TODO: provides this as an option? show all columns?
+    default_keys = default_columns  # TODO: provides this as an option? show all columns?
 
 st.multiselect("Select columns to display (by default only a selection is active; click below to add hidden columns).", options=df_sep_org.keys(), default=default_keys, key='_selected_columns_sep', on_change=store_value, args=["selected_columns_sep"])
 hidden_columns = df_sep_org.keys().tolist()
 if 'selected_columns_sep' in st.session_state:
-  df_sep = df_sep_org[st.session_state.selected_columns_sep]
-  for col in st.session_state.selected_columns_sep:
-    hidden_columns.remove(col) 
+    df_sep = df_sep_org[st.session_state.selected_columns_sep]
+    for col in st.session_state.selected_columns_sep:
+        hidden_columns.remove(col)
 else:
-  df_sep = df_sep_org[default_keys]
-  for col in default_keys:
-    hidden_columns.remove(col) 
+    df_sep = df_sep_org[default_keys]
+    for col in default_keys:
+        hidden_columns.remove(col)
 if len(hidden_columns) == 0:
-  st.write("All columns are displayed.")
+    st.write("All columns are displayed.")
 elif len(hidden_columns) > 0:
-  with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
-    st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
-    st.write("To show hidden columns, select them from the multiselect box above.")
+    with st.expander(f"{len(hidden_columns)} columns hidden (click for details):"):
+        st.dataframe(pd.DataFrame(hidden_columns, columns=['Column name']), hide_index=True)
+        st.write("To show hidden columns, select them from the multiselect box above.")
 
 
 gb = GridOptionsBuilder.from_dataframe(df_sep)
 for key in df_sep.keys():
-  gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
+    gb.configure_column(key, tooltipField=str(key), headerTooltip=str(key))
 # gb.configure_column("flare_comments", header_name='Flare Comments', tooltipField='flare_comments', headerTooltip='Comments about flares', width=10)
 
 # Make nan values invisible without removing them
 cell_style_nan = JsCode("""
-    function(params) {
-        console.log(params.value);
-        if (params.value === 'nan') {
-            return {
-                'color':'rgb(0, 0, 0, 0.0)',
-                /// 'backgroundColor':'white'
-            }
-        }
+        function(params) {
+                console.log(params.value);
+                if (params.value === 'nan') {
+                        return {
+                                'color':'rgb(0, 0, 0, 0.0)',
+                                /// 'backgroundColor':'white'
+                        }
+                }
 };
 """)
 gb.configure_columns(column_names=intensity_columns, cellStyle=cell_style_nan)
 
 # Make NaT values invisible without removing them
 cell_style_NaT = JsCode("""
-    function(params) {
-        console.log(params.value);
-        if (params.value === 'NaT') {
-            return {
-                'color':'rgb(0, 0, 0, 0.0)',
-                /// 'backgroundColor':'white'
-            }
-        }
+        function(params) {
+                console.log(params.value);
+                if (params.value === 'NaT') {
+                        return {
+                                'color':'rgb(0, 0, 0, 0.0)',
+                                /// 'backgroundColor':'white'
+                        }
+                }
 };
 """)
 # gb.configure_columns(column_names=date_columns, cellDataType='date', type=["dateColumnFilter", "customDateTimeFormat"], custom_format_string='yyyy-MM-dd', cellStyle=cell_style_NaT)
 gb.configure_columns(column_names=date_columns, type=["dateColumnFilter", "customDateTimeFormat"], custom_format_string='yyyy-MM-dd', cellStyle=cell_style_NaT)
 
 for key in ["SEP_IDX", "Flare_IDX", "CME_IDX", "Event No", "event number"]:
-  if key in df_sep.columns:
-    gb.configure_column(key, spanRows='true')
+    if key in df_sep.columns:
+        gb.configure_column(key, spanRows='true')
 
-gridOptions = gb.build() 
+gridOptions = gb.build()
 gridOptions['rowSelection'] = 'single'  # 'multiple'  # 'single'
 gridOptions["tooltipShowDelay"] = 500
 gridOptions['autoSizeStrategy'] = 'fitCellContents'  # 'fitGridWidth'  # 'fitCellContents'
@@ -138,16 +137,16 @@ gridOptions['enableCellSpan'] = 'true'
 gridOptions['suppressColumnVirtualisation'] = True
 
 if 'selected_theme' not in st.session_state:
-  st.session_state.selected_theme = "streamlit"
+    st.session_state.selected_theme = "streamlit"
 
-grid3 = AgGrid(df_sep, show_toolbar=True, height=500, gridOptions=gridOptions, 
-                updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,
-                allow_unsafe_jscode=True,
-                # columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
-                theme=st.session_state.selected_theme,
-                key="table3",
-                # update_on = ['selectionChanged'],
-                )
+grid3 = AgGrid(df_sep, show_toolbar=True, height=500, gridOptions=gridOptions,
+               updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,
+               allow_unsafe_jscode=True,
+               # columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+               theme=st.session_state.selected_theme,
+               key="table3",
+               # update_on = ['selectionChanged'],
+               )
 
 
 # this is a workaround to avoid showing details from previous selection while new selection is being processed until https://github.com/streamlit/streamlit/issues/5044 is resolved.
@@ -157,9 +156,9 @@ sleep(0.01)
 
 
 if (type(grid3['selected_rows']).__name__ == "NoneType"):
-  st.write('Select rows to see details!')
+    st.write('Select rows to see details!')
 else:
-  st.write(grid3['selected_rows'])
+    st.write(grid3['selected_rows'])
 
 # st.write('To download a table as csv file, move the mouse over it and click on the ⬇️ icon in the top right of the table.')
 # st.components.v1.html('<script src="https://kit.fontawesome.com/2c74303849.js" crossorigin="anonymous"></script><p>To download a table as csv file, move the mouse over it and click on the <i class="fa-solid fa-download"></i> icon in the top right of the table.</p>')
@@ -167,6 +166,6 @@ st.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fo
 
 file_path = os.path.join("catalogues", f"{fname}.csv")
 st.markdown(
-    get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
-    unsafe_allow_html=True
+        get_download_link(file_path, "Click here to download the full catalogue containing all columns as csv file!"),
+        unsafe_allow_html=True
 )

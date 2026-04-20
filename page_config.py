@@ -2,6 +2,7 @@ import base64
 import os
 import streamlit as st
 
+
 def setup():
     st.set_page_config(
         page_title="SOLER Catalogues",
@@ -28,14 +29,13 @@ def setup():
     # st.sidebar.write(st.session_state)
 
     pages = [st.Page("pages/home.py", title="Home"),
-            st.Page("pages/cme_catalogue.py", title="CME catalogue"),
-            st.Page("pages/flare_catalogue.py", title="Flare catalogue"),
-            st.Page("pages/sep_catalogue.py", title="SEP catalogue"),
-            ]
+             st.Page("pages/cme_catalogue.py", title="CME catalogue"),
+             st.Page("pages/flare_catalogue.py", title="Flare catalogue"),
+             st.Page("pages/sep_catalogue.py", title="SEP catalogue"),
+             ]
 
     pg = st.navigation(pages, position="top")
     # pg.run()
-
 
     st.markdown(
         """
@@ -64,9 +64,9 @@ def setup():
 def get_download_link(file_path: str, link_text: str) -> str:
     with open(file_path, "rb") as f:
         data = f.read()
-    
+
     b64 = base64.b64encode(data).decode()
     file_name = os.path.basename(file_path)
-    
+
     href = f'<a href="data:file/csv;base64,{b64}" download="{file_name}">{link_text}</a>'
     return href
