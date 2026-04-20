@@ -134,6 +134,8 @@ gridOptions['autoSizeStrategy'] = 'fitCellContents'  # 'fitGridWidth'  # 'fitCel
 #     }
 # )
 
+if 'selected_theme' not in st.session_state:
+  st.session_state.selected_theme = "streamlit"
 
 grid2 = AgGrid(df_flare, show_toolbar=True, height=500, gridOptions=gridOptions, 
                 updateMode=GridUpdateMode.SELECTION_CHANGED,  # GridUpdateMode.VALUE_CHANGED,
@@ -159,9 +161,6 @@ sleep(0.01)
 #   st.image(crocs_link.values[0])
 # except AttributeError:
 #   pass
-
-if 'selected_theme' not in st.session_state:
-  st.session_state.selected_theme = "streamlit"
 
 with details_container:
     with st.container(border=True):
